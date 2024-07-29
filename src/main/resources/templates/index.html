@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Alojamientos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <script>
+        function showFields() {
+            var type = document.getElementById("typeAccommodation").value;
+            document.getElementById("hotelFields").style.display = type === 'Hotel' ? 'block' : 'none';
+            document.getElementById("cabinFields").style.display = type === 'Cabin' ? 'block' : 'none';
+            document.getElementById("departmentFields").style.display = type === 'Department' ? 'block' : 'none';
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            showFields();
+        });
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1>Registrar Alojamiento</h1>
+    <form th:action="@{/type-of-accommodation}" method="post">
+        <div class="mb-3">
+            <label for="typeAccommodation" class="form-label">Tipo de Alojamiento</label>
+            <select id="typeAccommodation" name="typeAccommodation" class="form-select" onchange="showFields()" required>
+                <option value="" th:selected="${typeOfAccommodation?.typeAccommodation == null}">Seleccione</option>
+                <option value="Hotel" th:selected="${typeOfAccommodation?.typeAccommodation == 'Hotel'}">Hotel</option>
+                <option value="Cabin" th:selected="${typeOfAccommodation?.typeAccommodation == 'Cabin'}">Cabina</option>
+                <option value="Department" th:selected="${typeOfAccommodation?.typeAccommodation == 'Department'}">Departamento</option>
+            </select>
+        </div>
+
+        <div id="hotelFields" style="display: none;">
+            <!-- Campos específicos para Hotel -->
+            <div class="mb-3">
+                <label for="hotelName" class="form-label">Nombre del Hotel</label>
+                <input type="text" id="hotelName" name="hotelName" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="typeOfBedroom" class="form-label">Tipo de Habitación</label>
+                <input type="text" id="typeOfBedroom" name="typeOfBedroom" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="hotelPricePerNight" class="form-label">Precio por Noche</label>
+                <input type="number" id="hotelPricePerNight" name="hotelPricePerNight" class="form-control">
+            </div>
+        </div>
+
+        <div id="cabinFields" style="display: none;">
+            <!-- Campos específicos para Cabina -->
+            <div class="mb-3">
+                <label for="cabinName" class="form-label">Nombre de la Cabaña</label>
+                <input type="text" id="cabinName" name="cabinName" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="typeOfCabin" class="form-label">Tipo de Cabaña</label>
+                <input type="text" id="typeOfCabin" name="typeOfCabin" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="cabinPricePerNight" class="form-label">Precio por Noche</label>
+                <input type="number" id="cabinPricePerNight" name="cabinPricePerNight" class="form-control">
+            </div>
+        </div>
+
+        <div id="departmentFields" style="display: none;">
+            <!-- Campos específicos para Departamento -->
+            <div class="mb-3">
+                <label for="departmentName" class="form-label">Nombre del Departamento</label>
+                <input type="text" id="departmentName" name="departmentName" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="typeOfDepartment" class="form-label">Tipo de Departamento</label>
+                <input type="text" id="typeOfDepartment" name="typeOfDepartment" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="departmentPricePerNight" class="form-label">Precio por Noche</label>
+                <input type="number" id="departmentPricePerNight" name="departmentPricePerNight" class="form-control">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar</button>
+    </form>
+
+    <h2 class="mt-5">Lista de Alojamientos</h2>
+    <table class="table table-striped mt-3">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tipo</th>
+            <th>Fecha de Creación</th>
+            <th>Nombre</th>
+            <th>Detalles</th>
+            <th>Precio por Noche</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="typeOfAccommodation : ${typeOfAccommodations}">
+            <td th:text="${typeOfAccommodation.id}"></td>
+            <td th:text="${typeOfAccommodation.typeAccommodation}"></td>
+            <td th:text="${typeOfAccommodation.createdAt}"></td>
+            <td th:text="${typeOfAccommodation instanceof T(org.havenhub4.havenhub4.model.Hotel) ? typeOfAccommodation.hotelName : typeOfAccommodation instanceof T(org.havenhub4.havenhub4.model.Cabin) ? typeOfAccommodation.cabinName : typeOfAccommodation instanceof T(org.havenhub4.havenhub4.model.Department) ? typeOfAccommodation.departmentName : ''}"></td>
+            <td th:text="${typeOfAccommodation instanceof T(org.havenhub4.havenhub4.model.Hotel) ? 'Tipo de Habitación: ' + typeOfAccommodation.typeOfBedroom : typeOfAccommodation instanceof T(org.havenhub4.havenhub4.model.Cabin) ? 'Tipo de Cabaña: ' + typeOfAccommodation.typeOfCabin : typeOfAccommodation instanceof T(org.havenhub4.havenhub4.model.Department) ? 'Tipo de Departamento: ' + typeOfAccommodation.typeOfDepartment : ''}"></td>
+            <td th:text="${typeOfAccommodation instanceof T(org.havenhub4.havenhub4.model.Hotel) ? typeOfAccommodation.pricePerNight : typeOfAccommodation instanceof T(org.havenhub4.havenhub4.model.Cabin) ? typeOfAccommodation.pricePerNight : typeOfAccommodation instanceof T(org.havenhub4.havenhub4.model.Department) ? typeOfAccommodation.pricePerNight : ''}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
